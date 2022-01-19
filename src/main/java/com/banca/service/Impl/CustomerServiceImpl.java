@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service;
 
 import com.banca.model.Customer;
 import com.banca.repository.CustomerRepository;
-import com.banca.service.CustomerService;
+import com.banca.service.ICustomerService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class CustomerServiceImpl implements CustomerService {
+public class CustomerServiceImpl implements ICustomerService {
 
 	@Autowired
 	private CustomerRepository repo;

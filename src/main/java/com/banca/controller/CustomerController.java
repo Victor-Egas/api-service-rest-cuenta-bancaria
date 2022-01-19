@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banca.model.Customer;
-import com.banca.service.CustomerService;
+import com.banca.service.ICustomerService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -30,7 +30,7 @@ public class CustomerController {
 
 
 	@Autowired
-	private CustomerService service;
+	private ICustomerService service;
 	
 	@GetMapping("/findAll")
 	public Mono<ResponseEntity<Flux<Customer>>> findAll(){
