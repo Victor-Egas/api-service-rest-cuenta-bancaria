@@ -1,0 +1,8 @@
+#server.port:8082
+#spring.data.mongodb.uri=mongodb://localhost:27017/banca_app
+#spring.application.name=service-customer
+spring:
+  application:
+    name: service-customer
+  config:
+    import: optional:configserver:http://localhost:8888  
