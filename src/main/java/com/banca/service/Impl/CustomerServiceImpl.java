@@ -23,7 +23,9 @@ public class CustomerServiceImpl implements ICustomerService {
 
 	@Override
 	public Mono<Customer> findById(String id) {
-		return repo.findById(id);
+		Mono<Customer> fxCustomer=repo.findById(id);
+		System.out.println("Mono : "+fxCustomer);
+		return fxCustomer;
 	}
 
 	@Override

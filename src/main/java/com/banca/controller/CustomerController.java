@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,9 @@ import reactor.core.publisher.Mono;
 //@RequestMapping("/api/v1/customers")
 public class CustomerController {
 
-
+	@Autowired
+	private CircuitBreakerFactory cbFactory;
+	
 	@Autowired
 	private ICustomerService service;
 	
@@ -44,13 +47,38 @@ public class CustomerController {
 	
 	@GetMapping("/{id}")
 	public Mono<ResponseEntity<Customer>> findById(@PathVariable String id){
-		return  service.findById(id).map(c -> ResponseEntity
+		return  cbFactory.create("customer")
+				.run(() -> service.findById(id).map(c -> ResponseEntity
+						.ok()
+						.contentType(MediaType.APPLICATION_JSON)
+						.body(c))
+						.defaultIfEmpty(ResponseEntity.notFound().build()) , e -> findByIdAltern());
+				
+				/*service.findById(id).map(c -> ResponseEntity
+				.ok()
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(c))
+				.defaultIfEmpty(ResponseEntity.notFound().build());*/
+		
+	}
+	
+	public Mono<ResponseEntity<Customer>> findByIdAltern(){
+			Customer customer=new Customer();
+			customer.setId("11111111");
+			customer.setFirstName("Default");
+			customer.setLastName("Default");
+			customer.setType("Default");
+			
+		return Mono.just(customer)
+				.map(c -> ResponseEntity
 				.ok()
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(c))
 				.defaultIfEmpty(ResponseEntity.notFound().build());
-		
+				
+				
 	}
+	
 	
 	@PostMapping
 	public Mono<ResponseEntity<Customer>> insert(@RequestBody Customer customer , final ServerHttpRequest req){
